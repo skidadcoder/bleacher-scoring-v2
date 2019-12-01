@@ -3,9 +3,7 @@ import firebase from "firebase";
 import { ThemeContext } from "react-navigation";
 
 class UserController {
-  constructor() {
-    this.basePath = '/users';
-  }
+  constructor() { }
 
   login = async (email, password) => {
     return await firebase

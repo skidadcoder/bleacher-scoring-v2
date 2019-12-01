@@ -7,7 +7,7 @@ import rootReducer from './RootReducer';
 const persistConfig = {
   key: 'root',
   storage: AsyncStorage,
-  blacklist: ['loading', 'error'],
+  blacklist: ['loading', 'error', 'userGames'],
 };
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

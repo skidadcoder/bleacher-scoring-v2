@@ -1,31 +1,45 @@
-import React, { useCallback } from 'react';
-import { View, Text, } from 'react-native';
-import { useSelector } from 'react-redux';
-import { ThemeColors, useTheme } from 'react-navigation';
+import React, { useCallback, useEffect } from 'react';
+import { Layout, Text, Button, Icon } from 'react-native-ui-kitten';
+import { useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 
-import strings from '../../../localization';
+import { isLoadingSelector } from '../../../selectors/StatusSelectors';
 import getUser from '../../../selectors/UserSelectors';
+import getUserGames from '../../../selectors/UserGamesSelectors';
 
-import Button from '../../common/Button';
+import { fetchUserGames, actionTypes } from '../../../actions/UserGamesActions';
 
+import strings from '../../../localization';
 import ContainerStyles from '../../../helpers/ContainerStyles';
-import TextStyles from '../../../helpers/TextStyles';
 import styles from './styles';
 
 function MyGameList(props) {
-   let theme = useTheme();
-  let colors = ThemeColors[theme];
+  const games = useSelector(state => getUserGames(state));
+  const isLoading = useSelector(state => isLoadingSelector([actionTypes.FETCH_USER_GAMES], state));
+  const user = useSelector(state => getUser(state));
+
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(fetchUserGames());
+  }, []);
+
   return (
-    <View style={[ContainerStyles.container]}>
-      <Text style={TextStyles.lightTitle}>
-        My Game List
-      </Text>
-      <Button
-          title="Keep Score"
-          onPress={() => props.navigation.navigate('Scoreboard')}
-        />
-    </View>
+    <Layout style={ContainerStyles.container}>
+      <Text>My Game List</Text>
+      <Button onPress={() => props.navigation.navigate('Scoreboard')}>Scoreboard</Button>
+
+      {isLoading && (
+        <Text>Loading...</Text>
+      )}
+
+      {!games && (
+        <Text>no games</Text>
+      )}
+
+      {games && games.length > 0 && (
+        <Text>{games.length}</Text>
+      )}
+    </Layout>
   );
 }
 
